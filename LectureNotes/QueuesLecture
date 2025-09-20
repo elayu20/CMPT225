@@ -1,0 +1,17 @@
+FIFO (First in, First out)
+Use queues to store data for files to be printed by a shared printer
+	- printer prints files in order when received, (first in, first printed)
+Create two classes for print queue
+	- request class (student id, time, etc)
+	- container class to store requestes
+Items inserted at back, removed from front
+Can use for server requests
+Standard Template Library include queue implementation
+
+Array implementation for queue
+	Make back of queue current size of array
+	Make front of queue index 0
+	Inserting items are easy, becomes new back
+What happens when items are removed?
+	Either move all remaining items down - very slow
+	Increment front index - wastes space

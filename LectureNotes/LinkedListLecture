@@ -1,0 +1,8 @@
+A linked list can allow fast insertions and removals in the middle
+Assume a node constructor
+Node ( int value, Node* nd) {
+	data = value;
+	next = nd;
+}
+
+
