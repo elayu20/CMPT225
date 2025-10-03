@@ -1,0 +1,7 @@
+Linear Search Comparisons
+Best Case: first element of array
+Worst case: targets not in array or very last position in array
+Average case: Somewhere in the middle i.e. (n+1) / 2
+
+Bad to use recursive linear search
+
