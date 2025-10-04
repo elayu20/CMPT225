@@ -1,3 +1,8 @@
+// Edward Alayu
+// CMPT225
+// October 3, 2025
+// StringList.h
+
 #pragma once
 
 #include <string>
@@ -108,10 +113,14 @@ public:
 	// POST: Prints the list to the console
 	void print() const;
 
+	//DELETE
+	void debugUndoStack() const;
+
 private:
 	int n;
 	int capacity;
 	string* arr;
+	bool undoing = false; // For undo function
 
 	// Helper function for checking index bounds
 	// PARAM: i = index to check
@@ -127,5 +136,35 @@ private:
 	// POST: Makes a deep copy of lst
 	void copyList(const StringList& lst);
 
-};
+	class UndoStack {
+		public:
+			// Default constructor with a capacity of 4
+			UndoStack();
 
+			// Destructor
+			~UndoStack();
+
+			// Add a undo command to the top of the stack
+			void push(string command);
+
+			// Remove and return command at the top of the stack
+			string pop();
+
+			// Return true if the stack is empty
+			bool empty() const;
+
+			// DELETE
+			void debugPrint() const;
+
+		private:
+			string* stackArr;
+			int top;
+			int capacity;
+
+			// Doubles capacity of undo stack if topIndex = capacity
+			void checkCapacity();
+	};
+
+	// Initialize undo stack
+	UndoStack undoStack;
+};
