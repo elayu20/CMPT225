@@ -1,0 +1,290 @@
+🔹 Slides 2–4: What and Why of Algorithm Analysis
+
+1. What are the two main ways we measure algorithm efficiency?
+	Space and time efficiency
+
+2. What questions do we ask when evaluating time efficiency?
+	How long, in ms, does algorithm take to solve problem
+	How much time increases as problem size increases
+	How does it compare to other algorithms
+
+3. What questions do we ask when evaluating space efficiency?
+	How much memory space does my algorithm require to solve problems?
+
+4. Why can the choice of algorithm make a system significantly more or less usable?
+	Some algorithms become slower as it grows
+	Efficient ones allow larger-scale systems
+
+5. Give real-world examples where algorithm performance matters.
+	Systems that need instant responses
+	- air traffic control systems
+	- competitive video games
+
+🔹 Slides 5–7: Comparing and Timing Algorithms
+
+6. Why might different algorithms solve the same problem in different ways?
+	Produces the same results but different efficiency
+
+7. Why are we usually interested in algorithm performance on large inputs?
+	On small inputs, usually algorithm will perform well
+	On larger inputs, performance differs much more
+
+8. What makes recursive Fibonacci inefficient?
+	It repeatedly computes the values everytime it recurses, which is exponentially growing in time complexity
+
+9. How can you count how many operations an algorithm performs?
+	Visually walkthrough code
+	Insert code in algorithm to print the count
+
+10. Why might timing an algorithm not accurately measure its efficiency?
+	There are other several factors that can affect its time
+	- different hardware parts
+	- OS
+	- which programming language
+	- how algorithm is implemented
+	- system tasks
+	- other programs
+
+11. List some external factors that affect the measured run-time of an algorithm.
+	CPU speed, amount of Ram, etc
+
+🔹 Slides 8–12: Counting and Cost Functions
+
+12. What’s the benefit of counting operations instead of timing?
+	The hardware isn't a factor when measuring efficiency
+	We focus purely on the algorithm and its efficiency/growth rate
+
+13. What does it mean to represent running time as a cost function tₐ(n)?
+	We can use an input of size n instead of a fixed size
+	t(n) = 3n + 2
+	- Declare and initialize i is 1 operation (1)
+	- Compare, print elements, and increment are 3 operations done n times (n + n + n)
+	- Compare when i = n (1)
+	Therefore, 1 + n + n + n + 1 can be written is 3n + 2
+
+14. Write the cost function for printArray() and explain how it’s calculated.
+	t(n) = 1 + n + n + n + 1 = 3n + 2
+
+15. How can you use a “count” variable to measure operation counts in code?
+	Add a pass-by-reference count parameter, then initialize count variable
+	Then, increment operation counts, only count algorithm operations, NOT profiling code
+
+16. What assumptions are made when counting each C++ statement as one operation?
+	Every C++ statement = 1 operation
+	All operations take equal time
+
+17. Why are those assumptions not entirely true?
+	Not every C++ statement is a operation, like a function call
+	Some operations take different time, some are faster
+
+18. What is a barometer instruction (or key operation)?
+	It's the operation/instruction that is executed the most amount of times
+	Usually it's the same as its running time
+
+19. Why is the barometer instruction useful for estimating cost?
+	Because the growth rate is the same as the instruction executed the most amount of times
+
+🔹 Slides 13–14: Input Cases
+
+20. What are the best, average, and worst cases for algorithm performance?
+	These describe how performance differs based on different inputs of the same size, so t(n)
+
+21. Why is the best case often not important in practice?
+	Because we want to optimize our code, and we want to find a way to optimize the worst way
+
+🔹 Slides 15–24: Linear Search
+
+22. How does linear search work?
+
+23. What is returned when the item is found? When it is not found?
+
+24. What are the three barometer instructions in linear search?
+
+25. How many comparisons occur in the best, worst, and average cases?
+
+26. What assumptions (A1 and A2) are used when calculating the average cost?
+
+27. Derive the expected number of comparisons, E = (n + 1)/2.
+
+28. Using the assumptions, compute the overall average cost (3n + 1)/4.
+
+29. How does the recursive version of linear search work?
+
+30. How does sorting an array change the average cost of linear search?
+
+🔹 Slides 25–33: Binary Search
+
+31. How does binary search differ from linear search?
+
+32. What three main parts make up the algorithm?
+
+33. What are the barometer instructions in the while loop?
+
+34. What is the best case for binary search?
+
+35. What is the worst case, and how many iterations does it require?
+
+36. Explain why the worst case occurs when n = 2ᵏ ⇒ k = log₂n.
+
+37. Why is the average case more similar to the worst case?
+
+38. Write the recursive version of binary search and identify its base cases.
+
+39. Compare linear and binary search in terms of operations for various n.
+
+🔹 Slides 35–50: Selection Sort
+
+40. Describe how selection sort divides the array into sorted and unsorted parts.
+
+41. What two main operations does selection sort perform repeatedly?
+
+42. What does getSmallest() do? How many operations does it perform?
+
+43. How many swaps does selection sort perform overall?
+
+44. How do you calculate the total cost of nested loops?
+
+45. Derive the sum of the sequence 1 + 2 + … + (n – 1).
+
+46. Combine the operations to find the total cost function tₛₑₗₑcₜᵢₒₙ = 2n² + 8n – 8.
+
+47. Which instruction is the barometer operation for selection sort?
+
+48. How many times is it executed?
+
+49. How does the organization of the input (best/worst case) affect selection sort?
+
+50. Why is the difference between best and worst case small for this algorithm?
+
+🔹 Slides 51–59: Insertion Sort
+
+51. How does insertion sort differ conceptually from selection sort?
+
+52. What does it mean to “expand the sorted part”?
+
+53. In the insertion example, how many comparisons and moves occur for inserting 21?
+
+54. Write out the insertion sort code and identify its barometer operations.
+
+55. What is the worst-case input arrangement?
+
+56. Derive the total worst-case comparisons/moves = n(n – 1)/2.
+
+57. What is the best-case arrangement? How many operations occur?
+
+58. What is the average case, and how is it estimated?
+
+🔹 Slides 60–70: Seven Important Functions
+
+59. List the seven key growth functions used in algorithm analysis.
+	Constant O(c); c a constant
+	Logarithmic O(logn)
+	Linear O(n)
+	O(nlogn)
+	Quadratic O(n^2)
+	Polynomial O(n^k); k >= 0
+	Exponential O(k^n); k > 1
+
+60. Give an example of an algorithm for each (O(1), O(log n), O(n), etc.).
+	Constant - O(1): swap two values in array
+	Logarithmic - O(logn): Binary search
+	Linear - O(n); search for index in array, linear search, traverse linked list
+	O(nlogn): sorting - mergesort, heap sort, quick sort
+	Quadratic - O(n^2): simple sorting - bubble sort, selection sort, insertion sort
+	Polynomial O(n^k): matrix multiplication
+	Exponential O(k^n): recursive fibonacci
+
+61. What makes a function logarithmic? What’s the usual base in CS?
+	Log functions are log base b of n
+	The usual base is 2
+
+62. Apply logarithm rules to simplify: log₂(2n), log₂(n/2), log₄n, 2ˡᵒᵍ²ⁿ.
+	log[2](2n) = log[2](2) + log[2](n) = 1 + log[2](n)
+	log[2](n/2) = log[2](n) - log[2](2) = log[2](n) - 1
+	log[4](n) = log[2](n) / log[2](4) = log[2](n) / log[2](2^2) = log[2](n) / 2
+	2^(log[2](n)) = n^(log[2](2)) = n^1 = n
+
+63. What types of algorithms produce n log n behavior?
+	Sorting algorithms such as mergesort, heap sort, quicksort
+
+64. What makes a function quadratic?
+	Output is input^2
+	Contains nested loops
+
+65. Define a polynomial function formally.
+	f(n) = a[0] + a[1](n) + a[2]n^2 + a[3]n^3 + ... + a[d]n^d
+	where a[0], a[1], ..., a[d] are constants, called coefficients, of the polynomial and a[d] != 0
+
+66. What’s meant by polynomial time and why is it desirable?
+	Algorithms with complexity <= n^k for constant k; generalyl considered efficient
+
+67. What defines an exponential function, and why are such algorithms intractable?
+	b^n, b is often 2, b > 1
+	They are intractable because very slow
+
+🔹 Slides 71–91: Big-O and Related Notations
+
+68. Why do we analyze growth rates as n → ∞?
+	Want to compare algorithms behavior for large input sizes, so as n gets large
+	Focusing on long-term growth, not short-term performance
+
+69. Why do we often ignore leading constants and lower-order terms?
+	Constants are usually insignificant, and do not really affect growth rate for large n
+
+70. Using the cost function 2n² + 8n – 8, explain which term dominates and why.
+	n^2 dominates because it is the dominating term for large input values of n
+
+71. Define O-notation formally using constants c and n₀.
+	f(n) is O(g(n)) if there is a real constant c > 0 and an integer constant n[o] such that f(n) <= cg(n) for all n >= n[o]
+
+72. In plain English, what does “f(n) is O(g(n))” mean?
+	f(n) is order of g(n) or f(n) is in O(g(n))
+	The algorithm's running time grows no faster than some constant multiple of g(n)
+
+73. Demonstrate with a graph how 3n² ≥ 2n² + 8n – 8 for n ≥ 8.
+	3(8)^2 = 192
+	2(8)^2 + 8(8) - 8 = 184
+	192 >= 184
+
+74. Find c and n₀ that prove 3n + 12 is O(n).
+	f(n) = 3n + 12	
+	3n + 12 <= c * n; n >= n[o] // Divide both sides by n
+	3 + 12/n <= c
+	For n >= n[o], 3 + 12/n <= 3 + 12/n[o]
+	We could say c = 3 + 12/n[o]
+	Choose n[o] = 12
+	c = 3 + 12/n[o] -> c = 3 + 12/12 -> c = 4
+	3n + 12 <= 4n
+	Therefore, 3n = 12 = O(n) with c = 4 & n[o] = 12
+
+75. Show how to find c and n₀ that prove 2n² + 8n – 8 is O(n²).
+	2n^2 + 8n - 8 <= c * n^2, n >= n[o]
+	2 + 8/n - 8/n^2 <= c, n >= n[o]
+	2 + 8/n - 8/n^2 <= 2 + 8/n[o] - 8/(n[o])^2; n = 4, n[o] = 2 works
+	c = 2 + 8/n[o] - 8/(n[o])^2 -> c = 2 + 8/(2) - 8/(2^2) = 2 + 4 - 2 = 4
+	2n^2 + 8n - 8 <= 4n^2
+	Therefore, 2n^2 + 8n - 8 = O(n^2), with c = 4 & n[o] = 2
+
+76. Simplify examples:
+
+O(23 * log n)
+	O(logn)
+
+O(n + n²)
+	max[O(n), O(n^2)] = O(n^2)
+
+77. List and explain arithmetic rules for Big-O (O(kf), O(f+g), O(f*g)).
+	O(kf) = O(f) if k is a constant
+	O(f + g) = max[O(f), O(g)]
+	O(f * g) = O(f) * O(g)
+
+78. When might an algorithm’s growth rate vary with input organization?
+	Depends on input arrangement - e.ge, sorting partially sorted vs reverse-orderd data
+
+79. Distinguish between O (Big-O), Ω (Big-Omega), and Θ (Big-Theta).
+	Big-O gives the upper bound
+	Big-Omega gives a lower bound (there exists a constant c such that c * f(n) is a lower bound on the cost function g(n))
+	Big-Theta gives an upper and lower bound (k1 * f(n) is an upper bound on g(n) and k2 * f(n) is a lower bound on g(n))
+
+80. What are common growth rate categories and their relative speeds?
+	O(1) < O(logn) < O(n) < O(nlogn) < O(n^2) < O(n^3) < O(n^k) < O(2^n)
