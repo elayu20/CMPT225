@@ -95,84 +95,158 @@
 🔹 Slides 15–24: Linear Search
 
 22. How does linear search work?
+	Start at beginning of list, keep going up the list till find match or list ends
 
 23. What is returned when the item is found? When it is not found?
+	Returns index where item is found, or -1 when not found
 
 24. What are the three barometer instructions in linear search?
+	arr[i] == x
+	i < n
+	i++
 
 25. How many comparisons occur in the best, worst, and average cases?
+	Best case: target is first element of array, 1 comparison
+	Worst case: target not in array, or is last element of array. n comparisons
+	Average case: (3n + 1)/4	
 
 26. What assumptions (A1 and A2) are used when calculating the average cost?
+	Assumption 1: target is not in array half the time
+	Assumption 2: equal probability of target being at location if in array, so a target in an array has a 1/n chance of being at location i
 
 27. Derive the expected number of comparisons, E = (n + 1)/2.
+	(1 + 2 + 3 + ... + n)/n = (n + 1)/2
 
 28. Using the assumptions, compute the overall average cost (3n + 1)/4.
+	Target not in array/last element of array + Target is in array
+	n + (n + 1)/2
+	2n/2 + (n+1)/2
+	(3n+1)/2 = worst case + target in array
+	Average = (worst case + target in array)/2
+	(3n+1)/2/2 = (3n+1)/4
 
 29. How does the recursive version of linear search work?
+	Base case is when found target, or reach end of array
+	Recursive case is when target not found
 
 30. How does sorting an array change the average cost of linear search?
+	It changes the average cost of linear search to n / 2, so it only looks at half the array
+	This is because once an element in array is greater than or equal to target, then there's no point in looking at the other half of array
 
 🔹 Slides 25–33: Binary Search
 
 31. How does binary search differ from linear search?
+	Array must be sorted
+	Finds the middle element and sees if target matches middle element
+	If not, determines if target is greater than or less than middle element
+	If greater than, then only look at right side of array
+	If less than, then only look at left side of array
 
 32. What three main parts make up the algorithm?
+	Initializing the lower and upper elements as variables
+	While loop with return of middle index if target found
+	Return statement (usually after while loop) which indicates failure (i.e. didn't find target)
 
 33. What are the barometer instructions in the while loop?
+	low <= high
+	mid = (low + high) / 2
+	x == arr[mid]
+	x > arr[mid] OR x < arr[mid]
 
 34. What is the best case for binary search?
+	When middle of initial array is target
 
 35. What is the worst case, and how many iterations does it require?
+	Worst case: target not in array
+	Also worst case: search space only has one element (low and high are the same index)
+	Requires log[2](n) + 1 iterations in the worst case
 
 36. Explain why the worst case occurs when n = 2ᵏ ⇒ k = log₂n.
+	Since each iteration halves the search space of n, then where k is the kth iteration, n/2^k represents space after kth iteration until size 1
+	When in the worst case, kth iteration is the worst case, so worst case iterations -> k = log[2](n)
 
 37. Why is the average case more similar to the worst case?
+	Target is usually found near the end of the search
+	This is because chance of array element being the target is initially 1/n, then 1/(n/2) on second iteration
+	So as more iterations happen, 1/n, 1(n/2), 1(n/3), 1(n/k), then it is most likely to find the target near end
 
 38. Write the recursive version of binary search and identify its base cases.
+	base case: if (start > end), return -1 // error with arguments because start index is greater than last index,target not found
+	2nd base case: if (arr[mid] == x), return mid index // target is found
 
 39. Compare linear and binary search in terms of operations for various n.
 
 🔹 Slides 35–50: Selection Sort
 
 40. Describe how selection sort divides the array into sorted and unsorted parts.
+	Repeatedly find smallest element's index
+	Swap with first unsorted element
+	Mark the swapped portion as sorted
+	Repeat, until array is fully sorted
 
 41. What two main operations does selection sort perform repeatedly?
+	getSmallest and swap
 
 42. What does getSmallest() do? How many operations does it perform?
+	Returns the smallest index of unsorted array
+	Performs 4(end-start-1) + 4 operations
 
 43. How many swaps does selection sort perform overall?
+	n - 1 swaps
 
 44. How do you calculate the total cost of nested loops?
+	average number of iterations of inner loop * iterations of outer loop
+	total = sum of iterations of inner loop
 
 45. Derive the sum of the sequence 1 + 2 + … + (n – 1).
+	sum = (number_of_values * (first + last))/2
+	sum = ((n-1) * (1 + n - 1)) / 2 -> ((n-1) * n) / 2
+	sum = (n^2 - n)/2
 
 46. Combine the operations to find the total cost function tₛₑₗₑcₜᵢₒₙ = 2n² + 8n – 8.
+	Total cost = (3n-3) + (2n^2 + 2n - 4) + (3n-1)
+	Cost function: 2n^2 + 2n + 3n + 3n -4 -3 -1 = 2n^2 + 8n - 8
 
 47. Which instruction is the barometer operation for selection sort?
+	i < end
+	arr[i] < arr[smallest]
+	i++
 
 48. How many times is it executed?
+	n(n-1)/2
 
 49. How does the organization of the input (best/worst case) affect selection sort?
+	Only affects whether smallest is reassigned; doesn't change number of comparisons
 
 50. Why is the difference between best and worst case small for this algorithm?
+	Difference between 3n^2 and 4n^2, so only affects a few assignments, not loop counts
 
 🔹 Slides 51–59: Insertion Sort
 
 51. How does insertion sort differ conceptually from selection sort?
+	It builds the sorted section gradually by inserting each new element into its correct position
 
 52. What does it mean to “expand the sorted part”?
+	Move elements in sorted part up one position until correct position for first unsorted element is found
 
 53. In the insertion example, how many comparisons and moves occur for inserting 21?
+	27
 
 54. Write out the insertion sort code and identify its barometer operations.
+	pos > 0 && arr[pos -1] > temp
 
 55. What is the worst-case input arrangement?
+	Array is in descending order [5, 4, 3, 2, 1]
 
 56. Derive the total worst-case comparisons/moves = n(n – 1)/2.
+	n(n-1)/2 comparisons and same number of moves
 
 57. What is the best-case arrangement? How many operations occur?
+	Array is already sorted is best case
+	n comparisons, no moves, linear time O(n)
 
 58. What is the average case, and how is it estimated?
+	Closer to worst case: n*(n-1)/4 comparisons from random input
 
 🔹 Slides 60–70: Seven Important Functions
 
