@@ -78,174 +78,110 @@ Wordlist::~Wordlist() {
 	totalWordCount = 0;
 }
 
-// If word does not exist in list, insert with a count of one
-// If word exists in list, increment word's count
-void Wordlist::insert(string word) {
-	// Empty tree
-	if (root == nullptr) {
-		root = new AVLTreeNode(word);
+// Recursive AVL insertion
+// If word does not exist, insert with count 1
+// If word exists, increment its count
+// Returns the new root of the subtree after balancing
+AVLTreeNode* Wordlist::insertAVL(AVLTreeNode* node, const string& word) {
+	// Base case - empty node
+	if (node == nullptr) {
 		differentWordCount++;
 		totalWordCount++;
-		return;
+		return new AVLTreeNode(word);
 	}
 
-	AVLTreeNode* current = root;
-	AVLTreeNode* parent;
-	int newNodeHeight = 0;
-	// Keeps track of which child search ended at on NULL
-	// 1 if left, 2 if right
-	int whichChild;
-
-	// Traversing through tree, just checking if word exists
-	while (current != nullptr) {
-		// Word already exists, increment and stop
-		if (word == current->word) {
-			totalWordCount++;
-			current->count++;
-			return;
-		}
-		else if (word < current->word) {
-			parent = current;
-			current = current->left;
-			whichChild = 1;
-		}
-		else {
-			parent = current;
-			current = current->right;
-			whichChild = 2;
-		}
-		newNodeHeight++;
+	// Traversing through tree recursively
+	if (word < node->word) {
+		node->left = insertAVL(node->left, word);
+		node->left->parent = node;
 	}
-	differentWordCount++;
-	totalWordCount++;
-
-	// Word doesn't exist, create new node
-	AVLTreeNode *newNode = new AVLTreeNode(word);
-	newNode->height = newNodeHeight;
-	newNode->parent = parent;
-
-	if (whichChild == 1) {
-		parent->left = newNode;
+	else if (word > node->word) {
+		node->right = insertAVL(node->right, word);
+		node->right->parent = node;
 	}
-	else if (whichChild == 2) {
-		parent->right = newNode;
+	else {
+		// Word already exists, increment count
+		node->count++;
+		totalWordCount++;
+		return node;
 	}
+
+	// Rebalance current subtree
+	return rebalance(node);
+}
+// Calls recursive insert and rebalances tree
+void Wordlist::insert(string word) {	
+	root = insertAVL(root, word);
 }
 
-// Remove method, returns true if successful
-bool Wordlist::remove(string word) {
-	// Empty tree
-	if (root == nullptr) {
-		return false;
+// Recursive AVL remove helper
+// Removes the word and rebalances the subtree
+// Returns true if successful
+AVLTreeNode* Wordlist::removeAVL(AVLTreeNode* node, const string& word, bool& removed) {
+	// Word not found
+	if (node == nullptr) {
+		return node;
 	}
 
-	AVLTreeNode* current = root;
-	AVLTreeNode* parent = nullptr;
-
-	// Keeps track whether node to remove is left or right child of parent
-	// 1 if left, 2 if right
-	int whichChild = 0; // default value, node is root if unchanged
-	// Keeps track how many children a node has
-	int childrenCount;
-
-	while (current != nullptr && current->word != word) {
-
-		// Traversing through
-		if (word < current->word) {
-			parent = current;
-			current = parent->left;
-			whichChild = 1;
-		}
-		else if (word > current->word) {
-			parent = current;
-			current = parent->right;
-			whichChild = 2;
-		}
+	// Traversing through tree recursively
+	if (word < node->word) {
+		node->left = removeAVL(node->left, word, removed);
+		if (node->left != nullptr) node->left->parent = node;
 	}
-
-	// Didn't find word
-	if (current == nullptr) {
-		return false;
+	else if (word > node->word) {
+		node->right = removeAVL(node->right, word, removed);
+		if (node->right != nullptr) node->right->parent = node;
 	}
-
-	// Found word
-
-	// Determining how many children
-	// 2 children
-	if (current->left != nullptr && current->right != nullptr) {
-		childrenCount = 2;
-	}
-	// 1 child
-	else if (current->left != nullptr || current->right != nullptr) {
-		childrenCount = 1;
-	}
-	// No child
 	else {
-		childrenCount = 0;
+		// Found the node to remove
+		removed = true;
+		totalWordCount -= node->count;
+		differentWordCount--;
+
+		// Case 1: No children
+		if (node->left == nullptr && node->right == nullptr) {
+			delete node;
+			return nullptr;
+		}
+		// Case 2: One child
+		else if (node->left == nullptr) { 
+			AVLTreeNode* temp = node->right;
+			temp->parent = node->parent;
+			delete node;
+			return temp;
+		}
+		else if (node->right == nullptr) { 
+			AVLTreeNode* temp = node->left;
+			temp->parent = node->parent;
+			delete node;
+			return temp;
+		}
+		// Case 3: Two children
+		// Using predecessor
+		else {
+			AVLTreeNode* predecessor = node->left;
+			while (predecessor->right != nullptr) {
+				predecessor = predecessor->right;
+			}
+			// Copy predecessor's data into this node
+			node->word = predecessor->word;
+			node->count = predecessor->count;
+			// Remove the predecessor node
+			node->left = removeAVL(node->left, predecessor->word, removed);
+			if (node->left != nullptr) node->left->parent = node;
+		}
 	}
 
-	// Updates word counts
-	differentWordCount--;
-	totalWordCount -= current->count;
+	// If the tree had only one node, return it
+	if (node == nullptr) return node;
 
-	// No children, remove the leaf
-	if (childrenCount == 0) {	
-		// Update parent
-		if (whichChild == 1) parent->left = nullptr;
-		else if (whichChild == 2) parent->right = nullptr;
-
-		delete(current);
-
-		if (whichChild == 0) root = nullptr;
-	}
-	// 1 child
-	else if (childrenCount == 1) {
-		if (current->left != nullptr) { // only child is a left child
-			parent = current->left;
-		}
-		else if (current->right != nullptr) { // only child is a right child
-			parent = current->right;
-		}	
-		
-		if (whichChild == 0) root = parent;
-		delete(current);
-	}
-	// 2 children, using predecessor
-	else if (childrenCount == 2) {
-		AVLTreeNode* predecessorParent = current;
-		AVLTreeNode* predecessor = predecessorParent->left;
-
-		while (predecessor->right != nullptr) {
-			predecessorParent = predecessor;
-			predecessor = predecessor->right;
-		}
-
-		// Predecessor never has a right child, so attach its left subtree to its parent
-		// If the predecessor's parent is the node to remove, then set parents' left child
-		if (predecessorParent->word == word) predecessorParent->left = predecessor->left;
-		else predecessorParent->right = predecessor->left;
-
-		// Attach node to remove's children to predecessor
-		predecessor->left = current->left;
-		predecessor->right = current->right;
-
-		// Attach predecessor to node to remove's parent
-		if (whichChild == 1) {
-			parent->left = predecessor;
-		}
-		else if (whichChild == 2) {
-			parent->right = predecessor;
-		}
-
-		// Reassign root to predecessor if removing root
-		if (whichChild == 0) {
-			root = predecessor;
-		}
-
-		delete(current);
-	}
-
-	return true;
+	// Rebalance this node;
+	return rebalance(node);
+}
+bool Wordlist::remove(string word) {
+	bool removed = false;
+	root = removeAVL(root, word, removed);
+	return removed;
 }
 
 // Returns count of string word parameter
@@ -362,8 +298,122 @@ void Wordlist::printWordsInOrder(AVLTreeNode* node) const {
 	printWordsInOrder(node->right);
 }
 void Wordlist::printWords() const {
-	if (root == nullptr) {
-		throw std::invalid_argument("Word list is empty.");
-	}
 	printWordsInOrder(root);
+}
+
+int Wordlist::getHeight(AVLTreeNode* node) {
+	if (node == nullptr) {
+		return -1;
+	}
+	return node->height;
+}
+ 
+int Wordlist::getBalance(AVLTreeNode* node) {
+	if (node == nullptr) {
+		return 0;
+	}
+	return getHeight(node->left) - getHeight(node->right);
+}
+
+void Wordlist::updateHeight(AVLTreeNode* node) {
+	int leftHeight = getHeight(node->left);
+	int rightHeight = getHeight(node->right);
+
+	if (leftHeight > rightHeight) node->height = leftHeight + 1;
+	else node->height = rightHeight + 1;
+}
+
+// Performs a left rotation and returns the new subtree root
+AVLTreeNode* Wordlist::rotateLeft(AVLTreeNode* x) { // x is node to be rotated
+	if (x == nullptr || x->right == nullptr) return x;
+
+	AVLTreeNode* y = x->right;
+	x->right = y->left;
+
+	// Set nodes' parent references
+	// y's left child
+	if (y->left != nullptr) {
+		y->left->parent = x;
+	}
+
+	// y
+	y->parent = x->parent;
+
+	// Set child reference of x's parent
+	if (x->parent == nullptr) root = y; // x was root
+	else if (x == x->parent->left) x->parent->left = y; // left child
+	else x->parent->right = y;
+
+	// Make x y's left child
+	y->left = x;
+	x->parent = y;
+
+	// Update heights
+	updateHeight(x);
+	updateHeight(y);
+	
+	// Return new root of this rotated subtree
+	return y;
+}
+
+// Performs a right rotation and returns the new subtree root
+AVLTreeNode* Wordlist::rotateRight(AVLTreeNode* x) { // x is node to be rotated
+	if (x == nullptr || x->left == nullptr) return x;
+
+	AVLTreeNode* y = x->left;
+	x->left = y->right;
+
+	// Set nodes' parent references
+	// y's left child
+	if (y->right != nullptr) {
+		y->right->parent = x;
+	}
+
+	// y
+	y->parent = x->parent;
+
+	// Set child reference of x's parent
+	if (x->parent == nullptr) root = y; // x was root
+	else if (x == x->parent->left) x->parent->left = y; // left child
+	else x->parent->right = y;
+
+	// Make x y's right child
+	y->right = x;
+	x->parent = y;
+
+	// Update heights
+	updateHeight(x);
+	updateHeight(y);
+	
+	// Return new root of this rotated subtree
+	return y;
+}
+
+// Balances the subtree which has node root
+// Returns pointer to new root of subtree after rotation
+AVLTreeNode* Wordlist::rebalance(AVLTreeNode* node) {
+	if (node == nullptr) return node;
+
+	updateHeight(node);
+	int balance = getBalance(node);
+
+	// Left heavy
+	if (balance > 1) {
+		// Left-Right case
+		if (getBalance(node->left) < 0) {
+			node->left = rotateLeft(node->left);
+		}
+		return rotateRight(node);
+	}
+	// Right heavy
+	if (balance < -1) {
+		// Right-Left case
+		if (getBalance(node->right) > 0) {
+			node->right = rotateRight(node->right);
+		}
+		return rotateLeft(node);
+	}
+
+	// Balanced
+	return node;
 }

@@ -41,6 +41,16 @@ private:
 	void singletonsPostOrder(AVLTreeNode* node, int &singletons) const;
 	void printWordsInOrder(AVLTreeNode* node) const;
 	void copyPreOrder(AVLTreeNode* node);
+
+	// AVL-specific helper methods
+	int getHeight(AVLTreeNode* node);
+	int getBalance(AVLTreeNode* node);
+	void updateHeight(AVLTreeNode* node);
+	AVLTreeNode* rotateLeft(AVLTreeNode* x);
+	AVLTreeNode* rotateRight(AVLTreeNode* x);
+	AVLTreeNode* rebalance(AVLTreeNode* node);
+	AVLTreeNode* insertAVL(AVLTreeNode* node, const string& word);
+	AVLTreeNode* removeAVL(AVLTreeNode* node, const string& word, bool& removed);
 public:
 	// public methods go here
 
