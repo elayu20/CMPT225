@@ -148,11 +148,7 @@ bool Wordlist::remove(string word) {
 	// Keeps track how many chidlren a node has
 	int childrenCount;
 
-	while (current->word != word) {
-		// Didn't find word
-		if (current == nullptr) {
-			return false;
-		}
+	while (current->word != word && current != nullptr) {
 
 		// Traversing through
 		if (word < current->word) {
@@ -165,6 +161,11 @@ bool Wordlist::remove(string word) {
 			current = parent->right;
 			whichChild = 2;
 		}
+	}
+
+	// Didn't find word
+	if (current == nullptr) {
+		return false;
 	}
 
 	// Found word
@@ -194,11 +195,11 @@ bool Wordlist::remove(string word) {
 
 	// No children, remove the leaf
 	if (childrenCount == 0) {	
-		delete(current);
-
 		// Update parent
 		if (whichChild == 1) parent->left = nullptr;
 		else if (whichChild == 2) parent->right = nullptr;
+
+		delete(current);
 
 		if (root->word == word) root = nullptr;
 	}

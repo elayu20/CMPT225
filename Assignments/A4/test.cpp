@@ -14,7 +14,7 @@ int main() {
 	wl.printStatistics();
 	wl.printWords();
 
-	if(wl.remove("dog") == true) {
+	if(wl.remove("i") == true) {
 		printf("Remove successful!\n");
 	}
 	else printf("Unsuccessful remove.\n");
