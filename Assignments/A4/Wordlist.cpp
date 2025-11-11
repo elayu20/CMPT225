@@ -186,9 +186,7 @@ bool Wordlist::remove(string word) {
 
 	// Updates word counts
 	differentWordCount--;
-	for (int i = 0; i < current->count; i++) {
-		totalWordCount--;
-	}
+	totalWordCount -= current->count;
 
 	// No children, remove the leaf
 	if (childrenCount == 0) {	
@@ -215,14 +213,14 @@ bool Wordlist::remove(string word) {
 	// 2 children, using predecessor
 	else if (childrenCount == 2) {
 		AVLTreeNode* predecessorParent = current;
-		AVLTreeNode* predecessor = current->left;
+		AVLTreeNode* predecessor = predecessorParent->left;
 
-		while (predecessor != nullptr) {
+		while (predecessor->right != nullptr) {
 			predecessorParent = predecessor;
 			predecessor = predecessor->right;
 		}
 
-		// Predecessor never has a right child, attach its subtree to its parent
+		// Predecessor never has a right child, so attach its left subtree to its parent
 		// If the predecessor's parent is the node to remove, then set parents' left child
 		if (predecessorParent->word == word) predecessorParent->left = predecessor->left;
 		else predecessorParent->right = predecessor->left;
