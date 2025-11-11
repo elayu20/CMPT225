@@ -1,16 +1,26 @@
 #include "Wordlist.h"
 
 int main() {
-	Wordlist wl("tiny_shakespeare.txt");
+	Wordlist wl;
 
-	Wordlist wl2(wl);
-
-	if (wl2.contains(wl.getRoot()->word) == true) {
-		printf("yes it does\n");
-	}
+	wl.insert("dog");
+	wl.insert("cat");
+	wl.insert("cat");
+	wl.insert("bat");
+	wl.insert("cow");
+	wl.insert("cow");
+	wl.insert("cow");
 
 	wl.printStatistics();
-	wl2.printStatistics();
+	wl.printWords();
+
+	if(wl.remove("dog") == true) {
+		printf("Remove successful!\n");
+	}
+	else printf("Unsuccessful remove.\n");
+
+	wl.printStatistics();
+	wl.printWords();
 
 	return 0;
 }

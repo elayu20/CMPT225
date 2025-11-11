@@ -53,12 +53,18 @@ public:
 	// Copy constructor
 	Wordlist(const Wordlist& lst);
 
+	// Operator=
+	Wordlist& operator=(const Wordlist& lst);
+
 	// Destructor
 	~Wordlist();
 
 	// If word does not exist in list, insert with a count of one
 	// If word exists in list, increment word's count
 	void insert(string word);
+
+	// Remove method, returns true if successful
+	bool remove(string word);
 
 	// Returns count of string word parameter
 	int getCount(string word) const;

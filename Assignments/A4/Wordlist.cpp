@@ -43,6 +43,22 @@ Wordlist::Wordlist(const Wordlist& lst)
 	copyPreOrder(lst.getRoot());
 }
 
+// Operator=
+Wordlist& Wordlist::operator=(const Wordlist& lst) {
+	if (&lst != this) {
+		// Delete current tree and reset attributes
+		deletePostOrder(root);
+		root = nullptr;
+		differentWordCount = 0;
+		totalWordCount = 0;
+
+		copyPreOrder(lst.getRoot());
+	
+	}
+
+	return *this;
+}
+
 // Helper function
 void Wordlist::deletePostOrder(AVLTreeNode* node) {
 	// left->right->visit
@@ -114,6 +130,92 @@ void Wordlist::insert(string word) {
 	else if (whichChild == 2) {
 		parent->right = newNode;
 	}
+}
+
+// Remove method, returns true if successful
+bool Wordlist::remove(string word) {
+	// Empty tree
+	if (root == nullptr) {
+		return false;
+	}
+
+	AVLTreeNode* current = root;
+	AVLTreeNode* parent = nullptr;
+
+	// Keeps track of which child search ended at when found
+	// 1 if left, 2 if right
+	int whichChild;
+	// Keeps track how many chidlren a node has
+	int childrenCount;
+
+	while (current->word != word) {
+		// Didn't find word
+		if (current == nullptr) {
+			return false;
+		}
+
+		// Traversing through
+		if (word < current->word) {
+			parent = current;
+			current = parent->left;
+			whichChild = 1;
+		}
+		else if (word > current->word) {
+			parent = current;
+			current = parent->right;
+			whichChild = 2;
+		}
+	}
+
+	// Found word
+
+	// Determining how many children
+	// 2 children
+	if (current->left != nullptr && current->right != nullptr) {
+		childrenCount = 2;
+	}
+	// 1 child
+	else if (current->left != nullptr || current->right != nullptr) {
+		childrenCount = 1;
+	}
+	// No child
+	else {
+		childrenCount = 0;
+	}
+
+	// Only update differentWords if the count is 1
+	if (current->count == 1) {
+		totalWordCount--;
+		differentWordCount--;
+	}
+	else {
+		totalWordCount--;
+	}
+
+	// No children, remove the leaf
+	if (childrenCount == 0) {	
+		delete(current);
+
+		// Update parent
+		if (whichChild == 1) parent->left = nullptr;
+		else if (whichChild == 2) parent->right = nullptr;
+
+		if (root->word == word) root = nullptr;
+	}
+	// 1 child
+	else if (childrenCount == 1) {
+		// Root, whichChild not assigned
+		if (root->word == word) {
+		}
+		if (whichChild == 1) {
+			parent = current->left;
+		}
+		else if (whichChild == 2) {
+			parent = current->right;
+		}
+	}
+
+	return true;
 }
 
 // Returns count of string word parameter
