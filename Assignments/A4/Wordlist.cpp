@@ -142,13 +142,13 @@ bool Wordlist::remove(string word) {
 	AVLTreeNode* current = root;
 	AVLTreeNode* parent = nullptr;
 
-	// Keeps track of which child search ended at when found
+	// Keeps track whether node to remove is left or right child of parent
 	// 1 if left, 2 if right
-	int whichChild;
-	// Keeps track how many chidlren a node has
+	int whichChild = 0; // default value, node is root if unchanged
+	// Keeps track how many children a node has
 	int childrenCount;
 
-	while (current->word != word && current != nullptr) {
+	while (current != nullptr && current->word != word) {
 
 		// Traversing through
 		if (word < current->word) {
@@ -184,12 +184,9 @@ bool Wordlist::remove(string word) {
 		childrenCount = 0;
 	}
 
-	// Only update differentWords if the count is 1
-	if (current->count == 1) {
-		totalWordCount--;
-		differentWordCount--;
-	}
-	else {
+	// Updates word counts
+	differentWordCount--;
+	for (int i = 0; i < current->count; i++) {
 		totalWordCount--;
 	}
 
@@ -201,19 +198,53 @@ bool Wordlist::remove(string word) {
 
 		delete(current);
 
-		if (root->word == word) root = nullptr;
+		if (whichChild == 0) root = nullptr;
 	}
 	// 1 child
 	else if (childrenCount == 1) {
-		// Root, whichChild not assigned
-		if (root->word == word) {
-		}
-		if (whichChild == 1) {
+		if (current->left != nullptr) { // only child is a left child
 			parent = current->left;
 		}
-		else if (whichChild == 2) {
+		else if (current->right != nullptr) { // only child is a right child
 			parent = current->right;
+		}	
+		
+		if (whichChild == 0) root = parent;
+		delete(current);
+	}
+	// 2 children, using predecessor
+	else if (childrenCount == 2) {
+		AVLTreeNode* predecessorParent = current;
+		AVLTreeNode* predecessor = current->left;
+
+		while (predecessor != nullptr) {
+			predecessorParent = predecessor;
+			predecessor = predecessor->right;
 		}
+
+		// Predecessor never has a right child, attach its subtree to its parent
+		// If the predecessor's parent is the node to remove, then set parents' left child
+		if (predecessorParent->word == word) predecessorParent->left = predecessor->left;
+		else predecessorParent->right = predecessor->left;
+
+		// Attach node to remove's children to predecessor
+		predecessor->left = current->left;
+		predecessor->right = current->right;
+
+		// Attach predecessor to node to remove's parent
+		if (whichChild == 1) {
+			parent->left = predecessor;
+		}
+		else if (whichChild == 2) {
+			parent->right = predecessor;
+		}
+
+		// Reassign root to predecessor if removing root
+		if (whichChild == 0) {
+			root = predecessor;
+		}
+
+		delete(current);
 	}
 
 	return true;

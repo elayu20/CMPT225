@@ -10,11 +10,12 @@ int main() {
 	wl.insert("cow");
 	wl.insert("cow");
 	wl.insert("cow");
+	wl.insert("bat");
 
 	wl.printStatistics();
 	wl.printWords();
 
-	if(wl.remove("i") == true) {
+	if(wl.remove("dog") == true) {
 		printf("Remove successful!\n");
 	}
 	else printf("Unsuccessful remove.\n");
